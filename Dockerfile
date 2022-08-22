@@ -1,4 +1,4 @@
-FROM alpine:3.15
+FROM alpine:3.16
 RUN apk --no-cache add postgresql-client bash
 COPY wait-for-psql.sh /usr/bin/wait-for-psql
 RUN \
