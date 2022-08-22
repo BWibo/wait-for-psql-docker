@@ -13,11 +13,12 @@ function usage()
 
 
 Usage:
-   wait-for-psql.sh TIMEOUT HOST PORT USERNAME PASSWORD [COMMAND] [ARGUMENTS...]
+   wait-for-psql.sh TIMEOUT HOST PORT DBNAME USERNAME PASSWORD [COMMAND] [ARGUMENTS...]
 
     TIMEOUT         Timeout in seconds
     HOST            Host or IP of the postgres server
     PORT            Postgres server port
+    DBNAME          Postgres database name
     USERNAME        Postgres db user
     PASSWORD        Postgres db password
     COMMAND ARGS    Execute command with args after the test finishes
@@ -28,7 +29,7 @@ USAGE
 }
 
 # process arguments -----------------------------------------------------------
-if [ "$#" -lt 5 ]; then
+if [ "$#" -lt 6 ]; then
   printf '\nWrong number of arguments passed! At least 5 args are required.'
   usage
   exit 1
@@ -37,15 +38,16 @@ fi
 timeout="$1"
 host="$2"
 port="$3"
-user="$4"
-export PGPASSWORD="$5"
+dbname="$4"
+user="$5"
+export PGPASSWORD="$6"
 
 # set command to execute, if psql server is online within timeout -------------
-shift 5
+shift 6
 cmd="$@"
 
 # test postgres until timeout -------------------------------------------------
-until psql -h "$host" -p "$port" -U "$user" -c '\q'; do
+until psql -h "$host" -p "$port" -d "$dbname" -U "$user" -c '\q'; do
   >&2 echo "Postgres is unavailable - sleeping for ${sleeptime}s..."
   sleep $sleeptime
   if [ "$SECONDS" -gt "$timeout" ]; then
@@ -55,5 +57,5 @@ until psql -h "$host" -p "$port" -U "$user" -c '\q'; do
 done
 
 # postgres is up
->&2 echo "Postgres is up - executing command"
+>&2 echo "Postgres is up - executing command: $cmd"
 exec $cmd

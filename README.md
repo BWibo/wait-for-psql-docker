@@ -10,11 +10,12 @@ The Docker image is available at `bwibo/wait-for-psql` from
 ```text
 Usage:
     docker run --rm -t bwibo/wait-for-psql \
-      TIMEOUT HOST PORT USERNAME PASSWORD [COMMAND] [ARGUMENTS...]
+      TIMEOUT HOST PORT DBNAME USERNAME PASSWORD [COMMAND] [ARGUMENTS...]
 
     TIMEOUT         Timeout in seconds
     HOST            Host or IP of the postgres server
     PORT            Postgres server port
+    DBNAME          Postgres database name
     USERNAME        Postgres db user
     PASSWORD        Postgres db password
     COMMAND ARGS    Execute command with args after the test finishes
